@@ -1,0 +1,39 @@
+import { createTheorem } from "../../components/theorem";
+import { Layout } from "../../components/Layout";
+
+export default Layout;
+
+export const Theorem = createTheorem("定理");
+
+export const Definition = createTheorem("定義");
+
+## 二項定理と拡張
+
+このページでは次の_定理_を**証明**する。
+
+<Theorem name="二項定理">
+
+  $n \in \mathbb{N}$に対して
+
+  $$
+    (a + b)^n = \sum_{k = 0}^n {}_n C_r a^k b^{n - k}
+  $$
+
+</Theorem>
+
+<Theorem name="多項定理">
+
+  $k, n \in \mathbb{N}$に対して
+
+  $$
+    (a_1 + a_2 + \cdots + a_k)^n = \sum_{i_1 + i_2 + \cdots + i_n = n} \frac{n!}{i_1! i_2! \cdots i_n!} a_1^{i_1} a_2^{i_2} \cdots a_n^{i_n}
+  $$
+
+</Theorem>
+
+ただし、${}_n C_r$は次のように定義する。
+
+<Definition name="二項係数">
+
+  $n$個のものから$r$個だけ選ぶ選び方の総数を${}_n C_r$と表す。
+</Definition>
