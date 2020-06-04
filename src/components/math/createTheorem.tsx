@@ -1,30 +1,39 @@
 import React, { FC, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
+import { RefMeta } from "./types";
 
 interface Props {
   name?: string;
-  ref?: string;
+  register?: (x: RefMeta) => void;
 }
 
 export const createTheorem = (prefix: string) => {
   const uuidSet = new Set<string>();
   const encoded = encodeURIComponent(prefix);
 
-  const Theorem: FC<Props> = ({ name = "", children }) => {
+  const Theorem: FC<Props> = ({ name = "", register, children }) => {
     const uuid = useRef(uuidv4()).current;
-    const [order, setOrder] = useState(0);
+    const [htmlId, setHtmlId] = useState("");
+    const [counter, setCounter] = useState(0);
 
     if (!uuidSet.has(uuid)) {
       uuidSet.add(uuid);
-      setOrder(uuidSet.size);
+
+      const counter = uuidSet.size;
+      const htmlId = `theorem-${encoded}-${counter}`;
+
+      if (register) {
+        register({ isExternal: false, htmlId, counter, name });
+      }
+
+      setCounter(counter);
+      setHtmlId(htmlId);
     }
 
-    const htmlID = useRef(`theorem-${encoded}-${order}`).current;
-
     return (
-      <Container id={htmlID}>
-        <Title>{`${prefix}${order}．${name}`}</Title>
+      <Container id={htmlId}>
+        <Title>{`${prefix}${counter}．${name}`}</Title>
         <Contents>{children}</Contents>
       </Container>
     );
