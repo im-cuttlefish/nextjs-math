@@ -8,7 +8,7 @@ interface Props {
 }
 
 type Ref = FC<Props> & {
-  [key: string]: (refMeta: RefMeta) => void;
+  [key: string]: ((refMeta: RefMeta) => void) | undefined;
 };
 
 export const createRef = (
@@ -24,6 +24,10 @@ export const createRef = (
   }
 
   const Ref: FC<Props> = ({ id, name: nameFlag = false }) => {
+    if (!metaMap.has(id)) {
+      throw new Error(`Refference "${id}" has not been registered.`);
+    }
+
     const refMeta = metaMap.get(id);
 
     if (refMeta.isExternal) {
@@ -34,26 +38,38 @@ export const createRef = (
         return <a href={path}>{name}</a>;
       }
 
-      return <Link href={path}>{name}</Link>;
+      return (
+        <Link href={path}>
+          <a>{name}</a>
+        </Link>
+      );
     }
 
     const { name, counter, htmlId } = refMeta as InternalRefMeta;
 
     if (nameFlag) {
-      return <Link href={`#${htmlId}`}>{`${name}`}</Link>;
+      return (
+        <Link href={`#${htmlId}`}>
+          <a>{`${name}`}</a>
+        </Link>
+      );
     }
 
-    return <Link href={`#${htmlId}`}>{`${prefix}${counter}`}</Link>;
+    return (
+      <Link href={`#${htmlId}`}>
+        <a>{`${prefix}${counter}`}</a>
+      </Link>
+    );
   };
 
   const proxy = new Proxy(Ref, {
-    get: (target, prop) => {
-      if (typeof prop !== "string" || prop.slice(0, 1) !== "$") {
-        return Reflect.get(target, prop);
+    get: (target, key) => {
+      if (typeof key !== "string" || key.slice(0, 1) !== "$") {
+        return Reflect.get(target, key);
       }
 
       return (refMeta: RefMeta) => {
-        metaMap.set(prop, refMeta);
+        metaMap.set(key, refMeta);
       };
     },
   });

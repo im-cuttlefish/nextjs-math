@@ -1,6 +1,5 @@
 import React, { FC, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import styled from "styled-components";
 import { RefMeta } from "./types";
 
 interface Props {
@@ -26,12 +25,12 @@ export const createRefContainer = (prefix: string) => {
       setHtmlId(htmlId);
     }
 
-    return <Transparent id={htmlId}>{children}</Transparent>;
+    return (
+      <div id={htmlId} style={{ display: "contents" }}>
+        {children}
+      </div>
+    );
   };
 
   return Container;
 };
-
-const Transparent = styled.div`
-  display: contents;
-`;

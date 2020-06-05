@@ -1,18 +1,28 @@
 import React, { FC, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import styled from "styled-components";
-import { RefMeta } from "./types";
+import { RefMeta, Theme } from "./types";
+
+type Style = Theme & { theme?: Theme };
 
 interface Props {
   name?: string;
   register?: (x: RefMeta) => void;
 }
 
-interface Style {}
-
-export const createTheorem = (prefix: string) => {
+export const createTheorem = (prefix: string, style: Style = {}) => {
   const uuidSet = new Set<string>();
   const encoded = encodeURIComponent(prefix);
+  let computed: Omit<Style, "theme"> = style;
+
+  if (style.theme) {
+    const { theme } = style;
+
+    computed = {
+      container: { ...theme.container, ...style.container },
+      title: { ...theme.title, ...style.title },
+      content: { ...theme.content, ...style.content },
+    };
+  }
 
   const Theorem: FC<Props> = ({ name = "", register, children }) => {
     const uuid = useRef(uuidv4()).current;
@@ -34,27 +44,12 @@ export const createTheorem = (prefix: string) => {
     }
 
     return (
-      <Container id={htmlId}>
-        <Title>{`${prefix}${counter}．${name}`}</Title>
-        <Contents>{children}</Contents>
-      </Container>
+      <dl id={htmlId} style={computed.container}>
+        <dt style={computed.title}>{`${prefix}${counter}．${name}`}</dt>
+        <dd style={computed.content}>{children}</dd>
+      </dl>
     );
   };
 
   return Theorem;
 };
-
-const Container = styled.dl`
-  background: #00000011;
-  margin: 1rem 0;
-`;
-
-const Title = styled.dt`
-  padding: 0 0.7rem;
-  font-size: 1.3rem;
-  border-bottom: solid 1px #000;
-`;
-
-const Contents = styled.dd`
-  padding: 0.7rem;
-`;

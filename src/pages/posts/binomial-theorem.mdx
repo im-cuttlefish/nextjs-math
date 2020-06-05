@@ -1,4 +1,4 @@
-import { createTheorem, createRef } from "../../components/math";
+import { createTheorem, createRef, theme } from "../../components/math";
 import { Layout } from "../../components/Layout";
 
 export default Layout;
@@ -7,9 +7,13 @@ export const ThmRef = createRef("定理", {
   $newton: ["ニュートンの二項定理", "https://mathtrain.jp/genenikou"],
 });
 
-export const Theorem = createTheorem("定理");
+export const Theorem = createTheorem("定理", {
+  theme: theme.initial
+});
 
-export const Definition = createTheorem("定義");
+export const Definition = createTheorem("定義", {
+  theme: theme.initial
+});
 
 ## 二項定理と拡張
 
