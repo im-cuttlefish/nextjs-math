@@ -8,6 +8,8 @@ interface Props {
   register?: (x: RefMeta) => void;
 }
 
+interface Style {}
+
 export const createTheorem = (prefix: string) => {
   const uuidSet = new Set<string>();
   const encoded = encodeURIComponent(prefix);

@@ -4,7 +4,7 @@ import { Layout } from "../../components/Layout";
 export default Layout;
 
 export const ThmRef = createRef("定理", {
-  newton: ["ニュートンの二項定理", "https://mathtrain.jp/genenikou"],
+  $newton: ["ニュートンの二項定理", "https://mathtrain.jp/genenikou"],
 });
 
 export const Theorem = createTheorem("定理");
@@ -15,7 +15,7 @@ export const Definition = createTheorem("定義");
 
 このページでは次の_定理_を**証明**する。
 
-<Theorem name="二項定理" register={ThmRef.binomial}>
+<Theorem name="二項定理" register={ThmRef.$binomial}>
 
   $n \in \mathbb{N}$に対して
 
@@ -24,7 +24,7 @@ export const Definition = createTheorem("定義");
   $$
 </Theorem>
 
-<Theorem name="多項定理" register={ThmRef.multinomial}>
+<Theorem name="多項定理" register={ThmRef.$multinomial}>
 
   $k, n \in \mathbb{N}$に対して
 
@@ -40,6 +40,6 @@ export const Definition = createTheorem("定義");
   $n$個のものから$r$個だけ選ぶ選び方の総数を${}_n C_r$と表す。
 </Definition>
 
-まずは<ThmRef id="binomial" name />を考えよう。<ThmRef id="multinomial" />はその拡張である。
+まずは<ThmRef id="$binomial" name />を考えよう。<ThmRef id="$multinomial" />はその拡張である。
 
-別の方向の拡張としては<ThmRef id="newton" name />がある。
+別の方向の拡張としては<ThmRef id="$newton" name />がある。

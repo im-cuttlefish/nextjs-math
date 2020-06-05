@@ -47,7 +47,11 @@ export const createRef = (
   };
 
   const proxy = new Proxy(Ref, {
-    get: (_, prop) => {
+    get: (target, prop) => {
+      if (typeof prop !== "string" || prop.slice(0, 1) !== "$") {
+        return Reflect.get(target, prop);
+      }
+
       return (refMeta: RefMeta) => {
         metaMap.set(prop, refMeta);
       };
