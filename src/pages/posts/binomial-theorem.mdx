@@ -1,49 +1,51 @@
-import { createTheorem, createRef, theme } from "../../components/math";
 import { Layout } from "../../components/Layout";
+import { createRef } from "../../components/math";
+import { getEnvironment } from "../../components/getEnvironment";
 
 export default Layout;
 
-export const ThmRef = createRef("定理", {
+export const ThmRef =  createRef("定理", {
   $newton: ["ニュートンの二項定理", "https://mathtrain.jp/genenikou"],
 });
 
-export const Theorem = createTheorem("定理", {
-  theme: theme.initial
-});
-
-export const Definition = createTheorem("定義", {
-  theme: theme.initial
-});
+export const M = getEnvironment();
 
 ## 二項定理と拡張
 
 このページでは次の_定理_を**証明**する。
 
-<Theorem name="二項定理" register={ThmRef.$binomial}>
+<M.Theorem name="二項定理" register={ThmRef.$binomial}>
 
   $n \in \mathbb{N}$に対して
 
   $$
     (a + b)^n = \sum_{k = 0}^n {}_n C_r a^k b^{n - k}
   $$
-</Theorem>
+</M.Theorem>
 
-<Theorem name="多項定理" register={ThmRef.$multinomial}>
+<M.Theorem name="多項定理" register={ThmRef.$multinomial}>
 
   $k, n \in \mathbb{N}$に対して
 
   $$
     (a_1 + a_2 + \cdots + a_k)^n = \sum_{i_1 + i_2 + \cdots + i_n = n} \frac{n!}{i_1! i_2! \cdots i_n!} a_1^{i_1} a_2^{i_2} \cdots a_n^{i_n}
   $$
-</Theorem>
+</M.Theorem>
 
 ただし、${}_n C_r$は次のように定義する。
 
-<Definition name="二項係数">
+<M.Definition name="二項係数">
 
   $n$個のものから$r$個だけ選ぶ選び方の総数を${}_n C_r$と表す。
-</Definition>
+</M.Definition>
 
 まずは<ThmRef id="$binomial" name />を考えよう。<ThmRef id="$multinomial" />はその拡張である。
 
 別の方向の拡張としては<ThmRef id="$newton" name />がある。
+
+<M.Proof>
+
+  aaaaaaa
+
+  省略する。
+</M.Proof>

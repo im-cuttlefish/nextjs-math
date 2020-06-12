@@ -1,8 +1,9 @@
-import React, { FC, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { RefMeta, Theme } from "./types";
+import React, { FC, useState, useEffect } from "react";
+import { applyTheme } from "./internal/applyTheme";
+import { RefMeta, TheoremStyle, StyleWithTheme } from "./types";
+import { createCounter } from "./internal";
 
-type Style = Theme & { theme?: Theme };
+type Style = StyleWithTheme<TheoremStyle>;
 
 interface Props {
   name?: string;
@@ -10,43 +11,24 @@ interface Props {
 }
 
 export const createTheorem = (prefix: string, style: Style = {}) => {
-  const uuidSet = new Set<string>();
-  const encoded = encodeURIComponent(prefix);
-  let computed: Omit<Style, "theme"> = style;
-
-  if (style.theme) {
-    const { theme } = style;
-
-    computed = {
-      container: { ...theme.container, ...style.container },
-      title: { ...theme.title, ...style.title },
-      content: { ...theme.content, ...style.content },
-    };
-  }
+  const encodedPrefix = encodeURIComponent(prefix);
+  const applied = applyTheme("theorem", style);
+  const useCounter = createCounter();
 
   const Theorem: FC<Props> = ({ name = "", register, children }) => {
-    const uuid = useRef(uuidv4()).current;
     const [htmlId, setHtmlId] = useState("");
-    const [counter, setCounter] = useState(0);
+    const counter = useCounter();
 
-    if (!uuidSet.has(uuid)) {
-      uuidSet.add(uuid);
-
-      const counter = uuidSet.size;
-      const htmlId = `theorem-${encoded}-${counter}`;
-
-      if (register) {
-        register({ isExternal: false, htmlId, counter, name });
-      }
-
-      setCounter(counter);
+    useEffect(() => {
+      const htmlId = `theorem-${encodedPrefix}-${counter}`;
       setHtmlId(htmlId);
-    }
+      register && register({ isExternal: false, htmlId, counter, name });
+    }, []);
 
     return (
-      <dl id={htmlId} style={computed.container}>
-        <dt style={computed.title}>{`${prefix}${counter}．${name}`}</dt>
-        <dd style={computed.content}>{children}</dd>
+      <dl id={htmlId} style={applied.container}>
+        <dt style={applied.title}>{`${prefix}${counter}．${name}`}</dt>
+        <dd style={applied.content}>{children}</dd>
       </dl>
     );
   };

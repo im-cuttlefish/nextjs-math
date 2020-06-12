@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import Link from "next/link";
 import { RefMeta, InternalRefMeta } from "./types";
+import { useForceUpdate } from "./internal";
 
 interface Props {
   id: string;
@@ -15,6 +16,7 @@ export const createRef = (
   prefix: string,
   external?: { [id: string]: [string, string] }
 ) => {
+  const updaterSet = new Set<() => void>();
   const metaMap = new Map<string | number | symbol, RefMeta>();
 
   if (external) {
@@ -24,11 +26,18 @@ export const createRef = (
   }
 
   const Ref: FC<Props> = ({ id, name: nameFlag = false }) => {
-    if (!metaMap.has(id)) {
-      throw new Error(`Refference "${id}" has not been registered.`);
-    }
-
     const refMeta = metaMap.get(id);
+    const updater = useForceUpdate();
+
+    updaterSet.add(updater);
+
+    if (!refMeta) {
+      return (
+        <span
+          style={{ color: "red" }}
+        >{`[Error: "${id}" is not registered.]`}</span>
+      );
+    }
 
     if (refMeta.isExternal) {
       const { path, name } = refMeta;
@@ -70,6 +79,7 @@ export const createRef = (
 
       return (refMeta: RefMeta) => {
         metaMap.set(key, refMeta);
+        updaterSet.forEach((x) => x());
       };
     },
   });

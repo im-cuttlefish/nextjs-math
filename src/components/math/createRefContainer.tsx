@@ -1,5 +1,5 @@
-import React, { FC, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { FC, useState, useEffect } from "react";
+import { createCounter } from "./internal";
 import { RefMeta } from "./types";
 
 interface Props {
@@ -8,22 +8,18 @@ interface Props {
 }
 
 export const createRefContainer = (prefix: string) => {
-  const uuidSet = new Set<string>();
-  const encoded = encodeURIComponent(prefix);
+  const encodedPrefix = encodeURIComponent(prefix);
+  const useCounter = createCounter();
 
   const Container: FC<Props> = ({ name = "", register, children }) => {
-    const uuid = useRef(uuidv4()).current;
+    const counter = useCounter();
     const [htmlId, setHtmlId] = useState("");
 
-    if (!uuidSet.has(uuid)) {
-      uuidSet.add(uuid);
-
-      const counter = uuidSet.size;
-      const htmlId = `container-${encoded}-${counter}`;
-
-      register({ isExternal: false, htmlId, counter, name });
+    useEffect(() => {
+      const htmlId = `container-${encodedPrefix}-${counter}`;
       setHtmlId(htmlId);
-    }
+      register({ isExternal: false, htmlId, counter, name });
+    }, []);
 
     return (
       <div id={htmlId} style={{ display: "contents" }}>
