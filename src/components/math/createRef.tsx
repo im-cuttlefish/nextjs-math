@@ -19,7 +19,6 @@ export const createRef = ({ prefix, theme = {} }: Arguments) => {
   const refMap = new RefMap();
 
   const Ref: FC<Props> = ({ label, use, external, name }) => {
-    const refMeta = refMap.get(use);
     const fromParent = useContext(RefContext);
     const update = useForceUpdate();
 
@@ -44,6 +43,8 @@ export const createRef = ({ prefix, theme = {} }: Arguments) => {
     if (external || label) {
       return null;
     }
+
+    const refMeta = use && refMap.get(use);
 
     if (!refMeta) {
       return (

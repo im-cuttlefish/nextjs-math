@@ -12,7 +12,8 @@ class Document extends NextDocument {
     try {
       ctx.renderPage = () =>
         originalRenderPage({
-          enhanceApp: (App) => (props) =>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          enhanceApp: (App: any) => (props: any) =>
             sheet.collectStyles(<App {...props} />),
         });
 

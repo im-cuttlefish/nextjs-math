@@ -4,7 +4,8 @@ type External = { [id in string]?: [string, string] };
 
 export class RefMap extends Map<string, RefMeta> {
   registerExternal(external: External) {
-    for (const [id, [name, path]] of Object.entries(external)) {
+    for (const [id, value] of Object.entries(external)) {
+      const [name, path] = value as [string, string];
       this.set(id, { isExternal: true, name, path });
     }
   }

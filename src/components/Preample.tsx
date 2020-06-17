@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { MDXProvider } from "@mdx-js/react";
+const { MDXProvider } = require("@mdx-js/react");
 import * as doc from "./math";
 import theme from "./math.module.css";
 

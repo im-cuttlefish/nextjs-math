@@ -13,7 +13,9 @@ export const createCounter = () => {
     }
 
     useEffect(() => {
-      return () => symbolSet.delete(symbol);
+      return () => {
+        symbolSet.delete(symbol);
+      };
     }, []);
 
     return counter;
