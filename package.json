@@ -13,6 +13,7 @@
   "dependencies": {
     "@im-cuttlefish/next-mathdoc": "^1.0.2",
     "@mdx-js/loader": "^1.6.4",
+    "@mdx-js/react": "^1.6.5",
     "@next/mdx": "^9.4.2",
     "katex": "^0.11.1",
     "next": "^9.4.2",
@@ -22,7 +23,8 @@
     "remark-math": "^2.0.1",
     "ress": "^2.0.4",
     "styled-components": "^5.1.1",
-    "styled-jsx": "^3.3.0"
+    "styled-jsx": "^3.3.0",
+    "unist-util-visit": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "^14.0.5",

@@ -1,29 +1,28 @@
-import React, { FC, useState, useEffect } from "react";
-import { createCounter } from "./internal";
-import { RefMeta } from "./types";
+import React, { FC, useMemo } from "react";
+import { createCounter, RefContext } from "./internal";
+import { InternalRefMeta } from "./types";
 
 interface Props {
   name?: string;
-  register: (x: RefMeta) => void;
 }
 
 export const createRefContainer = (prefix: string) => {
   const encodedPrefix = encodeURIComponent(prefix);
   const useCounter = createCounter();
 
-  const Container: FC<Props> = ({ name = "", register, children }) => {
+  const Container: FC<Props> = ({ name = "", children }) => {
     const counter = useCounter();
-    const [htmlId, setHtmlId] = useState("");
+    const htmlId = `ref-${encodedPrefix}-${counter}`;
 
-    useEffect(() => {
-      const htmlId = `container-${encodedPrefix}-${counter}`;
-      setHtmlId(htmlId);
-      register({ isExternal: false, htmlId, counter, name });
+    const refMeta = useMemo(() => {
+      const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
+      name && (refMeta.name = name);
+      return refMeta;
     }, []);
 
     return (
       <div id={htmlId} style={{ display: "contents" }}>
-        {children}
+        <RefContext.Provider value={refMeta}>{children}</RefContext.Provider>
       </div>
     );
   };

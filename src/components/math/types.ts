@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { ReactNode } from "react";
 
 // Ref
 export interface InternalRefMeta {
@@ -16,22 +16,22 @@ export interface ExternalRefMeta {
 
 export type RefMeta = InternalRefMeta | ExternalRefMeta;
 
-// Proof
-export interface ProofMark {
-  start: string;
-  end: string;
+// Exercise
+export interface ExerciseStore {
+  counter: number;
 }
 
 // Theme
-export type Style<T extends string = string> = { [key in T]?: CSSProperties };
+type Ref = "refLink";
 
-export type StyleWithTheme<T extends Style> = T & { theme?: Theme };
+type Theorem = "theoremContainer" | "theoremTitle" | "theoremContent";
 
-export type TheoremStyle = Style<"container" | "title" | "content">;
+type Proof = "proofContainer" | "proofStartMark" | "proofEndMark";
 
-export type ProofStyle = Style<"container" | "start" | "end">;
+type Question = "questionContainer" | "questionTitle";
 
-export interface Theme {
-  theorem?: TheoremStyle;
-  proof?: ProofStyle;
-}
+type Answer = "answerContainer" | "answerTitle";
+
+type ClassName = Ref | Theorem | Proof | Question | Answer;
+
+export type Theme = { [key in ClassName]?: string };

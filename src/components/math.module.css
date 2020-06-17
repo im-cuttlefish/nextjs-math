@@ -1,0 +1,12 @@
+.refLink[data-internal] {
+  color: inherit;
+  text-decoration: none;
+}
+
+.theoremContainer {
+  background-color: #ddd;
+}
+
+.proofEndMark {
+  float: right;
+}

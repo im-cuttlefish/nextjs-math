@@ -1,88 +1,60 @@
-import React, { FC } from "react";
-import Link from "next/link";
-import { RefMeta, InternalRefMeta } from "./types";
-import { useForceUpdate } from "./internal";
+import React, { FC, useEffect, useContext } from "react";
+import { useForceUpdate, RefContext, RefRenderer, RefMap } from "./internal";
+import { Theme } from "./types";
 
-interface Props {
-  id: string;
-  name?: boolean;
+interface Arguments {
+  prefix: string;
+  theme?: Theme | Theme[];
 }
 
-type Ref = FC<Props> & {
-  [key: string]: ((refMeta: RefMeta) => void) | undefined;
-};
+interface Props {
+  label?: string;
+  use?: string;
+  name?: boolean;
+  external?: { [id in string]?: [string, string] };
+}
 
-export const createRef = (
-  prefix: string,
-  external?: { [id: string]: [string, string] }
-) => {
+export const createRef = ({ prefix, theme = {} }: Arguments) => {
   const updaterSet = new Set<() => void>();
-  const metaMap = new Map<string | number | symbol, RefMeta>();
+  const refMap = new RefMap();
 
-  if (external) {
-    for (const [id, [name, path]] of Object.entries(external)) {
-      metaMap.set(id, { isExternal: true, name, path });
+  const Ref: FC<Props> = ({ label, use, external, name }) => {
+    const refMeta = refMap.get(use);
+    const fromParent = useContext(RefContext);
+    const update = useForceUpdate();
+
+    updaterSet.add(update);
+
+    useEffect(() => {
+      if (label && fromParent) {
+        refMap.set(label, fromParent);
+        updaterSet.forEach((x) => x());
+        return () => refMap.delete(label);
+      }
+
+      if (external) {
+        refMap.registerExternal(external);
+        updaterSet.forEach((x) => x());
+        return () => refMap.unregisterExternal(external);
+      }
+
+      return () => updaterSet.delete(update);
+    }, []);
+
+    if (external || label) {
+      return null;
     }
-  }
-
-  const Ref: FC<Props> = ({ id, name: nameFlag = false }) => {
-    const refMeta = metaMap.get(id);
-    const updater = useForceUpdate();
-
-    updaterSet.add(updater);
 
     if (!refMeta) {
       return (
         <span
           style={{ color: "red" }}
-        >{`[Error: "${id}" is not registered.]`}</span>
+        >{`[Error: "${use}" is not registered.]`}</span>
       );
     }
 
-    if (refMeta.isExternal) {
-      const { path, name } = refMeta;
-      const isFullPath = /^(https?:)?\/\//.test(path);
-
-      if (isFullPath) {
-        return <a href={path}>{name}</a>;
-      }
-
-      return (
-        <Link href={path}>
-          <a>{name}</a>
-        </Link>
-      );
-    }
-
-    const { name, counter, htmlId } = refMeta as InternalRefMeta;
-
-    if (nameFlag) {
-      return (
-        <Link href={`#${htmlId}`}>
-          <a>{`${name}`}</a>
-        </Link>
-      );
-    }
-
-    return (
-      <Link href={`#${htmlId}`}>
-        <a>{`${prefix}${counter}`}</a>
-      </Link>
-    );
+    return <RefRenderer {...{ prefix, refMeta, name, theme }} />;
   };
 
-  const proxy = new Proxy(Ref, {
-    get: (target, key) => {
-      if (typeof key !== "string" || key.slice(0, 1) !== "$") {
-        return Reflect.get(target, key);
-      }
-
-      return (refMeta: RefMeta) => {
-        metaMap.set(key, refMeta);
-        updaterSet.forEach((x) => x());
-      };
-    },
-  });
-
-  return proxy as Ref;
+  return Ref;
 };

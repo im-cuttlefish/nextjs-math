@@ -1,34 +1,44 @@
-import React, { FC, useState, useEffect } from "react";
-import { applyTheme } from "./internal/applyTheme";
-import { RefMeta, TheoremStyle, StyleWithTheme } from "./types";
-import { createCounter } from "./internal";
+import React, { FC } from "react";
+import { RefContext, createCounter, mergeThemes } from "./internal";
+import { Theme, InternalRefMeta } from "./types";
 
-type Style = StyleWithTheme<TheoremStyle>;
+interface Arguments {
+  prefix: string;
+  theme?: Theme | Theme[];
+}
 
 interface Props {
   name?: string;
-  register?: (x: RefMeta) => void;
+  display?: "name" | "counter" | "both";
 }
 
-export const createTheorem = (prefix: string, style: Style = {}) => {
-  const encodedPrefix = encodeURIComponent(prefix);
-  const applied = applyTheme("theorem", style);
+export const createTheorem = (
+  id: string,
+  { prefix, theme = {} }: Arguments
+) => {
+  const merged = mergeThemes(theme);
+  const encoded = encodeURIComponent(id);
   const useCounter = createCounter();
 
-  const Theorem: FC<Props> = ({ name = "", register, children }) => {
-    const [htmlId, setHtmlId] = useState("");
+  const Theorem: FC<Props> = ({ name = "", display = "both", children }) => {
     const counter = useCounter();
+    const htmlId = `ref-${encoded}-${counter}`;
+    const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
 
-    useEffect(() => {
-      const htmlId = `theorem-${encodedPrefix}-${counter}`;
-      setHtmlId(htmlId);
-      register && register({ isExternal: false, htmlId, counter, name });
-    }, []);
+    if (name) {
+      refMeta.name = name;
+    }
 
     return (
-      <dl id={htmlId} style={applied.container}>
-        <dt style={applied.title}>{`${prefix}${counter}．${name}`}</dt>
-        <dd style={applied.content}>{children}</dd>
+      <dl id={htmlId} className={merged.theoremContainer}>
+        <dt className={merged.theoremTitle}>
+          {display !== "name" && `${prefix}${counter}`}
+          {display === "both" && "．"}
+          {display !== "counter" && name}
+        </dt>
+        <dd className={merged.theoremContent}>
+          <RefContext.Provider value={refMeta}>{children}</RefContext.Provider>
+        </dd>
       </dl>
     );
   };
