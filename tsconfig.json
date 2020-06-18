@@ -6,7 +6,6 @@
       "dom.iterable",
       "esnext"
     ],
-    // "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -16,12 +15,11 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "downlevelIteration": true
   },
   "exclude": [
-    "node_modules",
-    // "./src/components/ref/**/*.tsx",
-    // "./src/components/ref/**/*.ts"
+    "node_modules"
   ],
   "include": [
     "next-env.d.ts",

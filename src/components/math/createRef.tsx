@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useContext } from "react";
-import { useForceUpdate, RefContext, RefRenderer, RefMap } from "./internal";
-import { Theme } from "./types";
+import { useForceUpdate, RefContext, RefRenderer, RefMap } from "./util";
+import { Theme, Creater } from "./types";
 
 interface Arguments {
   prefix: string;
@@ -14,7 +14,7 @@ interface Props {
   external?: { [id in string]?: [string, string] };
 }
 
-export const createRef = ({ prefix, theme = {} }: Arguments) => {
+export const createRef: Creater<Arguments> = ({ prefix, theme = {} }) => {
   const updaterSet = new Set<() => void>();
   const refMap = new RefMap();
 

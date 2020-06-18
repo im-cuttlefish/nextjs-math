@@ -1,6 +1,6 @@
 import React, { FC } from "react";
-import { Theme } from "./types";
-import { mergeThemes } from "./internal";
+import { Theme, Creater } from "./types";
+import { mergeThemes } from "./util";
 
 interface Arguments {
   startMark?: string;
@@ -8,11 +8,11 @@ interface Arguments {
   theme?: Theme | Theme[];
 }
 
-export const createProof = ({
+export const createProof: Creater<Arguments> = ({
   startMark = "Proof.",
   endMark = "∎",
   theme = {},
-}: Arguments = {}) => {
+}) => {
   const merged = mergeThemes(theme);
 
   const Proof: FC = ({ children }) => (

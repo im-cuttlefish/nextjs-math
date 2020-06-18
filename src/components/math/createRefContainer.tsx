@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { createCounter, RefContext } from "./internal";
+import { createCounter, RefContext } from "./util";
 import { InternalRefMeta } from "./types";
 
 interface Props {
@@ -12,7 +12,7 @@ export const createRefContainer = (id: string) => {
 
   const Container: FC<Props> = ({ name = "", children }) => {
     const counter = useCounter();
-    const htmlId = `ref-${encoded}-${counter}`;
+    const htmlId = `mathdoc-${encoded}-${counter}`;
     const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
     name && (refMeta.name = name);
 

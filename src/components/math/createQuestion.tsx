@@ -4,10 +4,11 @@ import {
   mergeThemes,
   ExerciseContext,
   RefContext,
-} from "./internal";
-import { ExerciseStore, Theme, InternalRefMeta } from "./types";
+} from "./util";
+import { ExerciseStore, Theme, InternalRefMeta, Creater } from "./types";
 
 interface Arguments {
+  id: string;
   prefix: string;
   theme?: Theme | Theme[];
 }
@@ -16,17 +17,18 @@ interface Props {
   name?: string;
 }
 
-export const createQuestion = (
-  id: string,
-  { prefix, theme = {} }: Arguments
-) => {
+export const createQuestion: Creater<Arguments> = ({
+  id,
+  prefix,
+  theme = {},
+}) => {
   const encoded = encodeURIComponent(id);
   const merged = mergeThemes(theme);
   const useCounter = createCounter();
 
   const Question: FC<Props> = ({ name, children }) => {
     const counter = useCounter();
-    const htmlId = `ref-${encoded}-${counter}`;
+    const htmlId = `mathdoc-${encoded}-${counter}`;
     const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
     const store: ExerciseStore = { counter };
 
