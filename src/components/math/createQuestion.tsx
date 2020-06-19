@@ -1,9 +1,10 @@
-import React, { FC } from "react";
+import React, { FC, ComponentPropsWithoutRef } from "react";
 import {
   createCounter,
   mergeThemes,
   ExerciseContext,
   RefContext,
+  mergeClassName,
 } from "./util";
 import { ExerciseStore, Theme, InternalRefMeta, Creater } from "./types";
 
@@ -13,8 +14,9 @@ interface Arguments {
   theme?: Theme | Theme[];
 }
 
-interface Props {
+interface Props extends ComponentPropsWithoutRef<"div"> {
   name?: string;
+  className?: string;
 }
 
 export const createQuestion: Creater<Arguments> = ({
@@ -26,7 +28,8 @@ export const createQuestion: Creater<Arguments> = ({
   const merged = mergeThemes(theme);
   const useCounter = createCounter();
 
-  const Question: FC<Props> = ({ name, children }) => {
+  const Question: FC<Props> = ({ name, className, children }) => {
+    const containerStyle = mergeClassName(merged.answerContainer, className);
     const counter = useCounter();
     const htmlId = `mathdoc-${encoded}-${counter}`;
     const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
@@ -37,7 +40,7 @@ export const createQuestion: Creater<Arguments> = ({
     }
 
     return (
-      <div id={htmlId} className={merged.questionContainer}>
+      <div id={htmlId} className={containerStyle}>
         <p className={merged.questionTitle}>{`${prefix}${counter}`}</p>
         <RefContext.Provider value={refMeta}>
           <ExerciseContext.Provider value={store}>
@@ -48,5 +51,5 @@ export const createQuestion: Creater<Arguments> = ({
     );
   };
 
-  return Question;
+  return { Component: Question };
 };

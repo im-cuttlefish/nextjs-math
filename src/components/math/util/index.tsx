@@ -1,8 +1,9 @@
-export { RefMap } from "./refMap";
 export { RefContext } from "./refContext";
 export { RefRenderer } from "./RefRenderer";
 export { createCounter } from "./createCounter";
-export { useForceUpdate } from "./useForceUpdate";
 export { mergeThemes } from "./mergeThemes";
+export { mergeClassName } from "./mergeClassName";
 export { ExerciseContext } from "./exerciseContext";
 export { AnswerRenderer } from "./AnswerRenderer";
+export { refReducer } from "./refReducer";
+export { $provider } from "./providerSymbol";

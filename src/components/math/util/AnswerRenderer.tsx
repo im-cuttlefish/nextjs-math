@@ -1,8 +1,9 @@
-import React, { FC, useContext, useMemo } from "react";
+import React, { useContext, useMemo, FC } from "react";
 import { Theme, InternalRefMeta } from "../types";
 import { ExerciseContext } from "./exerciseContext";
 import { RefContext } from "./refContext";
 import { mergeThemes } from "./mergeThemes";
+import { mergeClassName } from "./mergeClassName";
 
 interface Props {
   id: string;
@@ -10,6 +11,7 @@ interface Props {
   theme?: Theme | Theme[];
   name?: string;
   expansion?: boolean;
+  className?: string;
 }
 
 export const AnswerRenderer: FC<Props> = ({
@@ -18,11 +20,13 @@ export const AnswerRenderer: FC<Props> = ({
   theme = {},
   name,
   expansion,
+  className,
   children,
 }) => {
   const { counter } = useContext(ExerciseContext);
   const encoded = useMemo(() => encodeURIComponent(id), [id]);
   const merged = useMemo(() => mergeThemes(theme), [theme]);
+  const containerStyle = mergeClassName(merged.answerContainer, className);
 
   const title = `${prefix}${counter}`;
   const htmlId = `mathdoc-${encoded}-${counter}`;
@@ -34,7 +38,7 @@ export const AnswerRenderer: FC<Props> = ({
 
   if (expansion) {
     return (
-      <details id={htmlId} className={merged.answerContainer}>
+      <details id={htmlId} className={containerStyle}>
         <summary className={merged.answerTitle} data-expansion>
           {title}
         </summary>
@@ -44,7 +48,7 @@ export const AnswerRenderer: FC<Props> = ({
   }
 
   return (
-    <div id={htmlId} className={merged.answerContainer}>
+    <div id={htmlId} className={containerStyle}>
       <p className={merged.answerTitle} data-displayed>
         {title}
       </p>

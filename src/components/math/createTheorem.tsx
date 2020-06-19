@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { RefContext, createCounter, mergeThemes } from "./util";
+import { RefContext, createCounter, mergeThemes, mergeClassName } from "./util";
 import { Theme, InternalRefMeta, Creater } from "./types";
 
 interface Arguments {
@@ -11,6 +11,7 @@ interface Arguments {
 interface Props {
   name?: string;
   display?: "name" | "counter" | "both";
+  className?: string;
 }
 
 export const createTheorem: Creater<Arguments> = ({
@@ -22,7 +23,13 @@ export const createTheorem: Creater<Arguments> = ({
   const encoded = encodeURIComponent(id);
   const useCounter = createCounter();
 
-  const Theorem: FC<Props> = ({ name = "", display = "both", children }) => {
+  const Theorem: FC<Props> = ({
+    name = "",
+    display = "both",
+    className,
+    children,
+  }) => {
+    const containerStyle = mergeClassName(merged.theoremContainer, className);
     const counter = useCounter();
     const htmlId = `mathdoc-${encoded}-${counter}`;
     const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
@@ -32,7 +39,7 @@ export const createTheorem: Creater<Arguments> = ({
     }
 
     return (
-      <dl id={htmlId} className={merged.theoremContainer}>
+      <dl id={htmlId} className={containerStyle}>
         <dt className={merged.theoremTitle}>
           {display !== "name" && `${prefix}${counter}`}
           {display === "both" && "．"}
@@ -45,5 +52,5 @@ export const createTheorem: Creater<Arguments> = ({
     );
   };
 
-  return Theorem;
+  return { Component: Theorem };
 };

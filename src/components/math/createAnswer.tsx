@@ -1,6 +1,11 @@
-import React, { FC, createContext, useContext, useRef, useEffect } from "react";
-import { AnswerRenderer } from "./util";
-import { Theme, Creater } from "./types";
+import React, { useContext, FC } from "react";
+import {
+  ExerciseContext,
+  mergeThemes,
+  mergeClassName,
+  RefContext,
+} from "./util";
+import { Theme, Creater, InternalRefMeta } from "./types";
 
 interface Arguments {
   id: string;
@@ -9,53 +14,50 @@ interface Arguments {
 }
 
 interface Props {
-  print?: boolean;
-  later?: boolean;
   name?: string;
   expansion?: boolean;
+  className?: string;
 }
 
-interface LaterContext {
-  registerAnswer: (x: symbol, y: Props) => void;
-  unregisterAnswer: (x: symbol) => void;
-  answers: Map<symbol, Props>;
-}
+export const createAnswer: Creater<Arguments> = ({
+  id,
+  prefix,
+  theme = {},
+}) => {
+  const encoded = encodeURIComponent(id);
+  const merged = mergeThemes(theme);
 
-const initialValue: LaterContext = {
-  registerAnswer: () => null,
-  unregisterAnswer: () => null,
-  answers: new Map(),
-};
+  const Answer: FC<Props> = ({ name, expansion, className, children }) => {
+    const { counter } = useContext(ExerciseContext);
+    const containerStyle = mergeClassName(merged.answerContainer, className);
+    const title = `${prefix}${counter}`;
+    const htmlId = `mathdoc-${encoded}-${counter}`;
+    const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
 
-export const createAnswer: Creater<Arguments> = (arg) => {
-  const Context = createContext(initialValue);
-
-  const Answer: FC<Props> = (props) => {
-    const context = useContext(Context);
-    const symbol = useRef(Symbol()).current;
-    const { print, later, children } = props;
-
-    useEffect(() => {
-      if (later) {
-        context.registerAnswer(symbol, { ...props, later: false });
-        return context.unregisterAnswer(symbol);
-      }
-    }, [props]);
-
-    if (later) {
-      return null;
+    if (name) {
+      refMeta.name = name;
     }
 
-    if (print) {
-      return <>{[...context.answers.values()]}</>;
+    if (expansion) {
+      return (
+        <details id={htmlId} className={containerStyle}>
+          <summary className={merged.answerTitle} data-expansion>
+            {title}
+          </summary>
+          <RefContext.Provider value={refMeta}>{children}</RefContext.Provider>
+        </details>
+      );
     }
 
     return (
-      <AnswerRenderer {...arg} {...props}>
-        {children}
-      </AnswerRenderer>
+      <div id={htmlId} className={containerStyle}>
+        <p className={merged.answerTitle} data-displayed>
+          {title}
+        </p>
+        <RefContext.Provider value={refMeta}>{children}</RefContext.Provider>
+      </div>
     );
   };
 
-  return Answer;
+  return { Component: Answer };
 };

@@ -1,23 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC } from "react";
 import { createRef } from "./createRef";
 import { createTheorem } from "./createTheorem";
 import { createProof } from "./createProof";
 import { createQuestion } from "./createQuestion";
 import { createAnswer } from "./createAnswer";
+import { $provider } from "./util";
 
 // general
-export type Creater<T> = (x: T) => FC | [FC, FC];
+export type Creater<T = any> = (
+  x: T
+) => { Component: FC<any>; [$provider]?: FC<any> };
+
+export type PickArguments<T extends Creater> = Readonly<Parameters<T>>[0];
 
 export type MathdocRules =
-  | ["ref", Parameters<typeof createRef>[0]]
-  | ["theorem", Parameters<typeof createTheorem>[0]]
-  | ["proof", Parameters<typeof createProof>[0]]
-  | ["question", Parameters<typeof createQuestion>[0]]
-  | ["answer", Parameters<typeof createAnswer>[0]];
+  | ["ref", PickArguments<typeof createRef>]
+  | ["theorem", PickArguments<typeof createTheorem>]
+  | ["proof", PickArguments<typeof createProof>]
+  | ["question", PickArguments<typeof createQuestion>]
+  | ["answer", PickArguments<typeof createAnswer>];
 
-export type MathdocEnvironment = {
-  [x in string]?: MathdocRules;
-};
+export type MathdocEnvironment = Readonly<
+  {
+    [x in string]?: MathdocRules | ReturnType<Creater>;
+  }
+>;
 
 // Ref
 export interface InternalRefMeta {

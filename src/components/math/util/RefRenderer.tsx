@@ -2,12 +2,14 @@ import React, { FC } from "react";
 import Link from "next/link";
 import { RefMeta, InternalRefMeta, Theme } from "../types";
 import { mergeThemes } from "./mergeThemes";
+import { mergeClassName } from "./mergeClassName";
 
 interface Props {
   prefix: string;
   refMeta: RefMeta;
   name?: boolean;
   theme?: Theme | Theme[];
+  className?: string;
 }
 
 export const RefRenderer: FC<Props> = ({
@@ -15,8 +17,10 @@ export const RefRenderer: FC<Props> = ({
   refMeta,
   name,
   theme = {},
+  className,
 }) => {
   const { refLink } = mergeThemes(theme);
+  const style = mergeClassName(refLink, className);
 
   if (refMeta.isExternal) {
     const { path, name } = refMeta;
@@ -24,7 +28,7 @@ export const RefRenderer: FC<Props> = ({
 
     if (isFullPath) {
       return (
-        <a href={path} className={refLink} data-external>
+        <a href={path} className={style} data-external>
           {name}
         </a>
       );
@@ -32,7 +36,7 @@ export const RefRenderer: FC<Props> = ({
 
     return (
       <Link href={path}>
-        <a className={refLink} data-external>
+        <a className={style} data-external>
           {name}
         </a>
       </Link>
@@ -44,14 +48,14 @@ export const RefRenderer: FC<Props> = ({
   if (name) {
     return (
       <Link href={`#${htmlId}`}>
-        <a className={refLink} data-internal>{`${refMeta.name}`}</a>
+        <a className={style} data-internal>{`${refMeta.name}`}</a>
       </Link>
     );
   }
 
   return (
     <Link href={`#${htmlId}`}>
-      <a className={refLink} data-internal>{`${prefix}${counter}`}</a>
+      <a className={style} data-internal>{`${prefix}${counter}`}</a>
     </Link>
   );
 };
