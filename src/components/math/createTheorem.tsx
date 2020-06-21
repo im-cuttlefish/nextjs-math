@@ -31,7 +31,7 @@ export const createTheorem: Creater<Arguments> = ({
   }) => {
     const containerStyle = mergeClassName(merged.theoremContainer, className);
     const counter = useCounter();
-    const htmlId = `mathdoc-${encoded}-${counter}`;
+    const htmlId = `${encoded}-${counter}`;
     const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
 
     if (name) {

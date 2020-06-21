@@ -31,7 +31,7 @@ export const createAnswer: Creater<Arguments> = ({
     const { counter } = useContext(ExerciseContext);
     const containerStyle = mergeClassName(merged.answerContainer, className);
     const title = `${prefix}${counter}`;
-    const htmlId = `mathdoc-${encoded}-${counter}`;
+    const htmlId = `${encoded}-${counter}`;
     const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
 
     if (name) {

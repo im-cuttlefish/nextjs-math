@@ -16,7 +16,7 @@ export const createRefContainer: Creater<Arguments> = ({ id }) => {
 
   const Container: FC<Props> = ({ name = "", children }) => {
     const counter = useCounter();
-    const htmlId = `mathdoc-${encoded}-${counter}`;
+    const htmlId = `${encoded}-${counter}`;
     const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
     name && (refMeta.name = name);
 

@@ -31,7 +31,7 @@ export const createQuestion: Creater<Arguments> = ({
   const Question: FC<Props> = ({ name, className, children }) => {
     const containerStyle = mergeClassName(merged.answerContainer, className);
     const counter = useCounter();
-    const htmlId = `mathdoc-${encoded}-${counter}`;
+    const htmlId = `${encoded}-${counter}`;
     const refMeta: InternalRefMeta = { isExternal: false, htmlId, counter };
     const store: ExerciseStore = { counter };
 
