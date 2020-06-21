@@ -40,7 +40,7 @@ export const createQuestion: Creater<Arguments> = ({
     }
 
     return (
-      <div id={htmlId} className={containerStyle}>
+      <div id={htmlId} className={containerStyle} data-mathdoc-id={id}>
         <p className={merged.questionTitle}>{`${prefix}${counter}`}</p>
         <RefContext.Provider value={refMeta}>
           <ExerciseContext.Provider value={store}>

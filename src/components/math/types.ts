@@ -8,7 +8,7 @@ import { createAnswer } from "./createAnswer";
 import { $provider } from "./util";
 
 // general
-export type Creater<T = any> = (
+export type Creater<T extends { id: string } = any> = (
   x: T
 ) => { Component: FC<any>; [$provider]?: FC<any> };
 
@@ -49,7 +49,7 @@ export interface ExerciseStore {
 }
 
 // Theme
-type Ref = "refLink";
+type Ref = "refLink" | "refExternalLink" | "refInternalLink";
 
 type Theorem = "theoremContainer" | "theoremTitle" | "theoremContent";
 

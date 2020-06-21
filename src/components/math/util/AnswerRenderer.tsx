@@ -39,7 +39,7 @@ export const AnswerRenderer: FC<Props> = ({
   if (expansion) {
     return (
       <details id={htmlId} className={containerStyle}>
-        <summary className={merged.answerTitle} data-expansion>
+        <summary className={merged.answerTitle} data-mathdoc-id={id}>
           {title}
         </summary>
         <RefContext.Provider value={refMeta}>{children}</RefContext.Provider>
@@ -49,7 +49,7 @@ export const AnswerRenderer: FC<Props> = ({
 
   return (
     <div id={htmlId} className={containerStyle}>
-      <p className={merged.answerTitle} data-displayed>
+      <p className={merged.answerTitle} data-mathdoc-id={id}>
         {title}
       </p>
       <RefContext.Provider value={refMeta}>{children}</RefContext.Provider>

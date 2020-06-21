@@ -40,7 +40,7 @@ export const createAnswer: Creater<Arguments> = ({
 
     if (expansion) {
       return (
-        <details id={htmlId} className={containerStyle}>
+        <details id={htmlId} className={containerStyle} data-mathdoc-id={id}>
           <summary className={merged.answerTitle} data-expansion>
             {title}
           </summary>
@@ -50,7 +50,7 @@ export const createAnswer: Creater<Arguments> = ({
     }
 
     return (
-      <div id={htmlId} className={containerStyle}>
+      <div id={htmlId} className={containerStyle} data-mathdoc-id={id}>
         <p className={merged.answerTitle} data-displayed>
           {title}
         </p>

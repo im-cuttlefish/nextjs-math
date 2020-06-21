@@ -1,12 +1,16 @@
 import React, { FC } from "react";
 import { createCounter, RefContext } from "./util";
-import { InternalRefMeta } from "./types";
+import { InternalRefMeta, Creater } from "./types";
+
+interface Arguments {
+  id: string;
+}
 
 interface Props {
   name?: string;
 }
 
-export const createRefContainer = (id: string) => {
+export const createRefContainer: Creater<Arguments> = ({ id }) => {
   const encoded = encodeURIComponent(id);
   const useCounter = createCounter();
 
@@ -17,11 +21,11 @@ export const createRefContainer = (id: string) => {
     name && (refMeta.name = name);
 
     return (
-      <div id={htmlId} style={{ display: "contents" }}>
+      <div id={htmlId} style={{ display: "contents" }} data-mathdoc-id={id}>
         <RefContext.Provider value={refMeta}>{children}</RefContext.Provider>
       </div>
     );
   };
 
-  return Container;
+  return { Component: Container };
 };

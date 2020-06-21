@@ -39,7 +39,7 @@ export const createTheorem: Creater<Arguments> = ({
     }
 
     return (
-      <dl id={htmlId} className={containerStyle}>
+      <dl id={htmlId} className={containerStyle} data-mathdoc-id={id}>
         <dt className={merged.theoremTitle}>
           {display !== "name" && `${prefix}${counter}`}
           {display === "both" && "．"}

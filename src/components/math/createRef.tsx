@@ -10,6 +10,7 @@ import { RefContext, RefRenderer, refReducer, $provider } from "./util";
 import { Theme, Creater, RefMeta } from "./types";
 
 interface Arguments {
+  id: string;
   prefix: string;
   theme?: Theme | Theme[];
 }
@@ -34,7 +35,7 @@ const initialValue: RefMapContext = {
   unregisterRefMeta: () => null,
 };
 
-export const createRef: Creater<Arguments> = ({ prefix, theme = {} }) => {
+export const createRef: Creater<Arguments> = ({ id, prefix, theme = {} }) => {
   const RefMapContext = createContext(initialValue);
 
   const Ref: FC<Props> = ({ label, use, external, name, className }) => {
@@ -79,7 +80,7 @@ export const createRef: Creater<Arguments> = ({ prefix, theme = {} }) => {
       );
     }
 
-    return <RefRenderer {...{ prefix, refMeta, name, theme, className }} />;
+    return <RefRenderer {...{ id, prefix, refMeta, name, theme, className }} />;
   };
 
   const Provider: FC = ({ children }) => {
